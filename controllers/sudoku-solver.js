@@ -37,7 +37,7 @@ class SudokuSolver {
     // get the region and put it to a string
     let startingRow = Math.floor(row/3) * 3; // get the starting row of the region of the coordinate
     let startingCol = Math.floor(column/3) * 3; // get the starting column of the region of the coordinate
-    let startPos = this.getStringPos(startingRow, startingCol); // get the starting position of the region in the puzzleString
+    let startPos = startingRow * 9 + startingCol; // get the starting position of the region in the puzzleString
     let regionToCheck = '';
     for(let i=0; i<3;i++){
       regionToCheck += puzzleString.substring(startPos, startPos+3);
@@ -62,36 +62,17 @@ class SudokuSolver {
   }
 
   solve(puzzleString) {
-    let row = -1;
-    let col = -1;
-    let isEmpty = true;
-    // get the first empty space.
-    for(let r = 0; r < 9; r++)
-    {
-        for(let c = 0; c < 9; c++)
-        {
-          let position = this.getStringPos(r, c);
-            if (puzzleString.charAt(position) == '.')
-            {
-              row = r;
-              col = c;
-              // We still have missing spaces
-              isEmpty = false;
-              break;
-            }
-        }
-        // puzzle is incomplete
-        if (!isEmpty)
-        {
-          break;
-        }
-    }
-
-    // No empty space left (puzzle completed)
-    if (isEmpty)
-    {
+    let row;
+    let col;
+    // get the first empty space
+    let position = puzzleString.indexOf('.');
+    if(position == -1){
+      // if no empty spaces, end function
       return puzzleString;
     }
+    // get row and col from index of string
+    row = Math.floor(position/9);
+    col = position - row * 9;
 
     // Else for each-row backtrack
     for(let num = 1; num <= 9; num++)
@@ -100,7 +81,6 @@ class SudokuSolver {
       // if value is valid for current position, then 'fill it in', if not try with next value
       if (isSafe.valid)
       {
-        let position = this.getStringPos(row, col);
         puzzleString = puzzleString.substring(0, position) + num.toString() + puzzleString.substring(position + 1);
         let tempSolvedPuzzle = this.solve(puzzleString, 9);
           if (tempSolvedPuzzle)
@@ -137,11 +117,6 @@ class SudokuSolver {
       return false;
     }
     return [rowNum, columnNum - 1];
-  }
-
-  // get the index of a coordinate in the puzzle string 
-  getStringPos(rowNum, column){
-    return rowNum * 9 + column;
   }
 
 }
