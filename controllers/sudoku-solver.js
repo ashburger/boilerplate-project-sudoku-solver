@@ -82,7 +82,7 @@ class SudokuSolver {
       if (isSafe.valid)
       {
         puzzleString = puzzleString.substring(0, position) + num.toString() + puzzleString.substring(position + 1);
-        let tempSolvedPuzzle = this.solve(puzzleString, 9);
+        let tempSolvedPuzzle = this.solve(puzzleString);
           if (tempSolvedPuzzle)
           {
             // when this block is reached, puzzle is solved, and completed
